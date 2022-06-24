@@ -1,19 +1,41 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Route, Router, Routes } from 'react-router-dom'
-import { Login } from '../Components/auth/Login/Login'
-import { Register } from '../Components/auth/Register/Register'
+import { Login } from '../Components/auth/pages/Login/Login'
+import { Register } from '../Components/auth/pages/Register/Register'
 
 import { CalendarScreen } from '../Components/calendar/CalendarScreen'
 
-export const CalendarRouter = () => {
-  return (
-    <div>
-        <Routes>
-            <Route exact path='/' element={<CalendarScreen/>}/>
-            <Route exact path='/login' element={<Login/>}/>
-            <Route exact path='/register' element={<Register/>}/>
+import { AuthRouter } from './AuthRouter'
+import { PrivateRoute } from './PrivateRoute'
+import { PublicRoute } from './PublicRoute'
 
+export const CalendarRouter = () => {
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+
+  return (
+    <>
+      
+        <Routes>
+            
+           <Route
+            path='/*'
+            element={
+              <PublicRoute isAuth={isLoggedIn}>
+                <AuthRouter/>
+              </PublicRoute>
+            }
+           />
+          <Route
+            path='/'
+            element={
+              <PrivateRoute isAuth={isLoggedIn}>
+                <CalendarScreen/>
+              </PrivateRoute>
+            }
+          />
         </Routes>       
-    </div>
+    </>
   )
 }
